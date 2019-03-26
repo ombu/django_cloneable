@@ -3,6 +3,8 @@ from django.test import TestCase
 
 from .models import ModelWithCustomPK
 from .models import ModelWithFields
+from .models import RelatedModel
+from .models import ModelWithFK
 
 
 class CloneableTests(TestCase):
@@ -27,3 +29,13 @@ class CloneableTests(TestCase):
         assert i2.pk == 'bar'
         assert i1.pk != i2.pk
         assert i2.value == 42
+
+    def test_cloning_object_allows_overwriting_fk_reference(self):
+        i1 = ModelWithFK.objects.create()
+        i1.related = RelatedModel.objects.create()
+        i1.save()
+
+        i2 = i1.clone()
+        i2.related = RelatedModel.objects.create()
+        i2.save()
+        assert i1.related != i2.related

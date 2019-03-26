@@ -14,7 +14,9 @@ class ModelCloneHelper(object):
         import copy
         if not self.instance.pk:
             raise ValueError('Instance must be saved before it can be cloned.')
-        return copy.copy(self.instance)
+        duplicate = copy.copy(self.instance)
+        duplicate._state = models.base.ModelState()
+        return duplicate
 
     def _clone_prepare(self, duplicate, exclude=None):
         # Setting pk to None tricks Django into not trying to overwrite the old
